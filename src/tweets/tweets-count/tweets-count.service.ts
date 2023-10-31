@@ -18,7 +18,7 @@ export class TweetsCountService {
   @Interval(5000)
   async countTweets() {
     console.log('procurando tweets');
-    let offset = await this.cacheManager.get<number>('tweet-offset');
+    let offset: number = await this.cacheManager.get('tweet-offset');
     offset = offset === undefined ? 0 : offset;
 
     console.log(`offsets: ${offset}`);
@@ -28,8 +28,10 @@ export class TweetsCountService {
       limit: this.limit,
     });
 
+    console.log(`${tweets.length} encontrados`);
+
     if (tweets.length === this.limit) {
-      this.cacheManager.set('tweet-offset', offset + this.limit, 1 * 60 * 10);
+      this.cacheManager.set('tweet-offset', offset + this.limit, 1000000);
       console.log(`achou + ${this.limit} tweets`);
     }
   }
